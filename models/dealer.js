@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'Dealers',
     timestamps: true,
-    // paranoid:true,
+    paranoid:true,
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   });

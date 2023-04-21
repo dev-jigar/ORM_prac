@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'Users',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
-    // paranoid:true,
+    paranoid:true,
     timestamps: true,
   });
   return User;

@@ -13,7 +13,7 @@ let sequelize;
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
+  sequelize = new Sequelize(config.database, config.username, config.password, config );
 }
 
 fs
@@ -42,7 +42,26 @@ db.Sequelize = Sequelize;
 
 
 db.users = require('../models/User')(sequelize, DataTypes)
-db.sequelize.sync({ force: false }).then(() => {
+db.contact = require('../models/contact')(sequelize, DataTypes)
+
+// one-one Relationship
+
+// db.users.hasOne(db.contact , {foreignKey:'user_id'});
+// db.contact.belongsTo(db.users);
+
+// one-many Relationship
+
+// db.users.hasMany(db.contact,{foreignKey:'user_id'});
+// db.contact.belongsTo(db.users,  {foreignKey:'user_id'});
+
+//many to many relationship
+
+db.users.belongsToMany(db.contact,{through:'User_Contact'});
+db.contact.belongsToMany(db.users,{through:'User_Contact'});
+
+
+
+db.sequelize.sync({ alter:false }).then(() => {
     console.log("Synced users");
 })
 module.exports = db;

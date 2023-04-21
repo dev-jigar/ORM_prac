@@ -9,7 +9,8 @@ module.exports = {
       email: faker.internet.email(),
       createdAt: new Date(),
       updatedAt: new Date(),
-      Address:faker.address.secondaryAddress()
+      User_Address:faker.address.secondaryAddress(),
+      gender:faker.name.gender()
     }
     ))
 
