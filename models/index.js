@@ -40,10 +40,13 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+//requireing all models
 
 db.users = require('../models/User')(sequelize, DataTypes)
 db.contact = require('../models/contact')(sequelize, DataTypes)
 db.usertasks = require('../models/usertasks')(sequelize, DataTypes)
+db.course = require('../models/course')(sequelize, DataTypes)
+db.junc = require('../models/junc')(sequelize, DataTypes)
 
 // one-one Relationship
 

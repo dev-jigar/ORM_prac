@@ -230,12 +230,9 @@ const oneTomanyRelationShip = async (req, res) => {
       data: data,
     };
     res.status(200).json(response);
-
   } catch (error) {
     console.log(error);
   }
-
-
 };
 //update one to many Relationship
 const UpdatedRelationOnetoMany = async (req, res) => {
@@ -302,6 +299,22 @@ const oneRelationShiptomany = async (req, res) => {
     console.log(error);
   }
 };
+const HandleMnyRelationShip = async (req, res) => {
+  //add user by relationship
+
+  try {
+    const { email, name, courseName } = req.body;
+
+    let data = await Users.findAll({
+      where: {
+        email: email,
+      },
+    });
+    console.log(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
 module.exports = {
   restore_user,
   delete_user,
@@ -315,4 +328,5 @@ module.exports = {
   oneTomanyRelationShip,
   UpdatedRelationOnetoMany,
   oneRelationShiptomany,
+  HandleMnyRelationShip,
 };

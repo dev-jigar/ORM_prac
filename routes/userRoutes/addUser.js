@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {addUserMtd,Count, updateAPI, getAllData, findParticular, pagination, delete_user, restore_user, oneRelationShip, oneTomanyRelationShip, UpdatedRelationOnetoMany, manyToMany, oneRelationShiptomany } = require('../../Controllers/userController/getUserController')
+const {addUserMtd,Count, updateAPI, getAllData, findParticular, pagination, delete_user, restore_user, oneRelationShip, oneTomanyRelationShip, UpdatedRelationOnetoMany, manyToMany, oneRelationShiptomany, HandleMnyRelationShip } = require('../../Controllers/userController/getUserController')
 
 router.route('/').get(addUserMtd).post(addUserMtd)
 router.route('/count').get(Count)
@@ -14,6 +14,7 @@ router.route('/one-one').get(oneRelationShip)
 router.route('/one-many').get(oneTomanyRelationShip)
 router.route('/one-many-up').get(UpdatedRelationOnetoMany)
 router.route('/one-many-ins').get(oneRelationShiptomany)
+router.route('/many-many').get(HandleMnyRelationShip)
 
 
 
