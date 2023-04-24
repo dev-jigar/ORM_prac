@@ -4,6 +4,7 @@ var db = require("../../models");
 const Sequelize = db.Sequelize;
 const Users = db.users;
 const contact = db.contact;
+const UserTasks = db.usertasks;
 //APIS
 const addUserMtd = async (req, res) => {
   const { name, email } = req.body;
@@ -209,26 +210,32 @@ const oneRelationShip = async (req, res) => {
 //one to many relationships search results
 const oneTomanyRelationShip = async (req, res) => {
   const { search } = req.body;
-  let data = await contact.findAll({
-    where: {
-      [Op.or]: {
-        phone: { [Op.like]: `%${search}%` },
-        p_address: { [Op.like]: `%${search}%` },
+  try {
+    let data = await contact.findAll({
+      where: {
+        [Op.or]: {
+          phone: { [Op.like]: `%${search}%` },
+          p_address: { [Op.like]: `%${search}%` },
+        },
       },
-    },
-    include: [
-      {
-        model: Users,
-        attributes: ["name"],
-      },
-    ],
-  });
+      include: [
+        {
+          model: Users,
+          attributes: ["name"],
+        },
+      ],
+    });
+    let response = {
+      // name: data[0].User.name ,
+      data: data,
+    };
+    res.status(200).json(response);
 
-  let response = {
-    // name: data[0].User.name ,
-    data: data,
-  };
-  res.status(200).json(response);
+  } catch (error) {
+    console.log(error);
+  }
+
+
 };
 //update one to many Relationship
 const UpdatedRelationOnetoMany = async (req, res) => {
@@ -268,10 +275,33 @@ const UpdatedRelationOnetoMany = async (req, res) => {
   }
 };
 
-const manyToMany = async (req, res) => {
+const oneRelationShiptomany = async (req, res) => {
+  //add user by relationship
 
+  try {
+    const { email, taskname } = req.body;
+    let data = await Users.findOne({
+      where: {
+        email: email,
+      },
+    });
+    console.log(data);
+    if (data && data.dataValues.id) {
+      await UserTasks.create({
+        taskname: taskname,
+        user_id: data.id,
+      });
+      var response = {
+        data: data,
+        success: "Done",
+      };
+    }
 
-}
+    res.status(200).json(response);
+  } catch (error) {
+    console.log(error);
+  }
+};
 module.exports = {
   restore_user,
   delete_user,
@@ -284,5 +314,5 @@ module.exports = {
   oneRelationShip,
   oneTomanyRelationShip,
   UpdatedRelationOnetoMany,
-  manyToMany
+  oneRelationShiptomany,
 };

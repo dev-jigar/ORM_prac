@@ -43,6 +43,7 @@ db.Sequelize = Sequelize;
 
 db.users = require('../models/User')(sequelize, DataTypes)
 db.contact = require('../models/contact')(sequelize, DataTypes)
+db.usertasks = require('../models/usertasks')(sequelize, DataTypes)
 
 // one-one Relationship
 
@@ -56,8 +57,8 @@ db.contact = require('../models/contact')(sequelize, DataTypes)
 
 //many to many relationship
 
-db.users.belongsToMany(db.contact,{through:'User_Contact'});
-db.contact.belongsToMany(db.users,{through:'User_Contact'});
+// db.users.belongsToMany(db.contact,{through:'User_Contact'});
+// db.contact.belongsToMany(db.users,{through:'User_Contact'});
 
 
 
