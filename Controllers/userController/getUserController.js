@@ -5,6 +5,8 @@ const Sequelize = db.Sequelize;
 const Users = db.users;
 const contact = db.contact;
 const UserTasks = db.usertasks;
+const Junc = db.junc;
+const Course = db.course;
 //APIS
 const addUserMtd = async (req, res) => {
   const { name, email } = req.body;
@@ -303,14 +305,68 @@ const HandleMnyRelationShip = async (req, res) => {
   //add user by relationship
 
   try {
-    const { email, name, courseName } = req.body;
+    const { email, name, whichCourse } = req.body;
 
-    let data = await Users.findAll({
+    let MainData = await Users.findAll({
       where: {
         email: email,
       },
     });
-    console.log(data);
+    console.log("Data::::::::", MainData);
+    if (MainData.length === 0) {
+      console.log("adfsdfds");
+      let data = await Users.create({
+        name: name,
+        email: email,
+      });
+
+      if (data) {
+        let some = await Course.findByPk(whichCourse);
+        if (some && some.dataValues.id) {
+          let insJunc = await Junc.create({
+            CourseId: some.dataValues.id,
+            UserId: MainData[0].dataValues.id,
+          });
+          let response
+          if (insJunc && insJunc.dataValues.id) {
+           response = {
+              data: insJunc,
+              success: "Done",
+            };
+          }
+          res.status(200).json(response);
+        }
+      }
+     
+    } else {
+      let sdata = await Users.update(
+        { name: name, email: email },
+        {
+          where: {
+            id: MainData[0].dataValues.id,
+          },
+        }
+      );
+
+      if (sdata) {
+        let some = await Course.findByPk(whichCourse);
+
+        if (some && some.dataValues.id) {
+          let insJunc = await Junc.create({
+            CourseId: some.dataValues.id,
+            UserId: MainData[0].dataValues.id,
+          });
+          let response 
+          if (insJunc && insJunc.dataValues.id) {
+            response = {
+              data: insJunc,
+              success: "Done",
+            };
+          } 
+          res.status(200).json(response); 
+        }
+      }
+    }
   } catch (error) {
     console.log(error);
   }
