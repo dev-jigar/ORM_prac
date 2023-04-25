@@ -1,4 +1,4 @@
-const { Op, HasOne, and, where, DATE } = require("sequelize");
+const { Op, HasOne, and, where, DATE, LOCK } = require("sequelize");
 // const { Sequelize} = require('sequelize')
 var db = require("../../models");
 const Sequelize = db.Sequelize;
@@ -314,7 +314,6 @@ const HandleMnyRelationShip = async (req, res) => {
     });
     console.log("Data::::::::", MainData);
     if (MainData.length === 0) {
-      console.log("adfsdfds");
       let data = await Users.create({
         name: name,
         email: email,
@@ -325,19 +324,16 @@ const HandleMnyRelationShip = async (req, res) => {
         if (some && some.dataValues.id) {
           let insJunc = await Junc.create({
             CourseId: some.dataValues.id,
-            UserId: MainData[0].dataValues.id,
+            UserId: data.dataValues.id,
           });
-          let response
-          if (insJunc && insJunc.dataValues.id) {
-           response = {
-              data: insJunc,
-              success: "Done",
-            };
-          }
+          let response;
+          response = {
+            data: insJunc,
+            success: "Done",
+          };
           res.status(200).json(response);
         }
       }
-     
     } else {
       let sdata = await Users.update(
         { name: name, email: email },
@@ -352,21 +348,52 @@ const HandleMnyRelationShip = async (req, res) => {
         let some = await Course.findByPk(whichCourse);
 
         if (some && some.dataValues.id) {
-          let insJunc = await Junc.create({
-            CourseId: some.dataValues.id,
-            UserId: MainData[0].dataValues.id,
+          let checkExists = await Junc.findOne({
+            where: {
+              CourseId: whichCourse,
+              UserId: MainData[0].dataValues.id,
+            },
           });
-          let response 
-          if (insJunc && insJunc.dataValues.id) {
+          console.log("checkExists", checkExists);
+
+          if (checkExists) {
+            res.status(200).json("Relation Already Exists");
+          } else {
+            let insJunc = await Junc.create({
+              CourseId: some.dataValues.id,
+              UserId: MainData[0].dataValues.id,
+            });
+            let response;
             response = {
               data: insJunc,
               success: "Done",
             };
-          } 
-          res.status(200).json(response); 
+            res.status(200).json(response);
+          }
         }
       }
     }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const fetchDatafromMany = async (req, res) => {
+  try {
+    const data = await Junc.findAll({
+      attributes: ["id", "CourseId", "UserId"],
+      include: [
+        {
+          model:Users,
+          attributes: ["name", "id"],
+        },
+        {
+          model:Course,
+          attributes: ["courseName", "id"],
+        },
+      ],
+    });
+    res.status(200).json(data);
   } catch (error) {
     console.log(error);
   }
@@ -385,4 +412,5 @@ module.exports = {
   UpdatedRelationOnetoMany,
   oneRelationShiptomany,
   HandleMnyRelationShip,
+  fetchDatafromMany,
 };

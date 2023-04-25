@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.contact, { foreignKey: "user_id" });
       User.hasMany(models.UserTasks, { foreignKey: "user_id" });
       User.belongsToMany(models.Course, { through: `${Junc}` });
-      // User.hasMany(models.junc, { foreignKey: "UserId" })
+      User.hasMany(models.junc, { foreignKey: "UserId" })
     
     }
   }
