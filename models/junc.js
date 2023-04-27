@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
   class junc extends Model {
     static associate(models) {
       // junc.hasMany(models.Users, { foreignKey: "UserId" })
-      junc.belongsTo(models.Users, { foreignKey: "UserId" });
+      junc.belongsTo(models.Users, { foreignKey: "UserId", as:"User" });
       junc.belongsTo(models.Course, { foreignKey: "CourseId" });
     }
   }
@@ -12,19 +12,19 @@ module.exports = (sequelize, DataTypes) => {
     {
       UserId: {
         type: DataTypes.INTEGER,
-        references: {
-          model: "Users",
-          key: "id",
-          as: "UserId",
-        },
+        // references: {
+        //   model: "Users",
+        //   key: "id",
+        //   as: "UserId",
+        // },
       },
       CourseId: {
         type: DataTypes.INTEGER,
-        references: {
-          model: "Courses",
-          key: "id",
-          as: "CourseId",
-        },
+        // references: {
+        //   model: "Courses",
+        //   key: "id",
+        //   as: "CourseId",
+        // },
       },
     },
     {

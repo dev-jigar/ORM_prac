@@ -2,11 +2,11 @@ const { Op, HasOne, and, where, DATE, LOCK } = require("sequelize");
 // const { Sequelize} = require('sequelize')
 var db = require("../../models");
 const Sequelize = db.Sequelize;
-const Users = db.users;
+const Users = db.Users;
 const contact = db.contact;
-const UserTasks = db.usertasks;
+const UserTasks = db.UserTasks;
 const Junc = db.junc;
-const Course = db.course;
+const Course = db.Course;
 //APIS
 const addUserMtd = async (req, res) => {
   const { name, email } = req.body;
@@ -102,7 +102,6 @@ const pagination = async (req, res) => {
   let page = req.query.page;
   let sort = req.query.sort || "ASC";
 
-  console.log(sort);
   let limit = 4;
   if (page == 0) {
     page = 1;
@@ -301,6 +300,8 @@ const oneRelationShiptomany = async (req, res) => {
     console.log(error);
   }
 };
+
+//add data into many to many table
 const HandleMnyRelationShip = async (req, res) => {
   //add user by relationship
 
@@ -384,11 +385,12 @@ const fetchDatafromMany = async (req, res) => {
       attributes: ["id", "CourseId", "UserId"],
       include: [
         {
-          model:Users,
+          model: Users,
+          as: "User",
           attributes: ["name", "id"],
         },
         {
-          model:Course,
+          model: Course,
           attributes: ["courseName", "id"],
         },
       ],
